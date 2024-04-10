@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">The Movide DB V24</string>
+    <string name="movie_Detail">Movie Details</string>
+    <string name="back_button">Back</string>
+</resources>
