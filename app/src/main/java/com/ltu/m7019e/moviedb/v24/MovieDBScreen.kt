@@ -1,6 +1,7 @@
 package com.ltu.m7019e.moviedb.v24
 
 import androidx.annotation.StringRes
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -26,13 +27,16 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.ltu.m7019e.moviedb.v24.database.Movies
+import com.ltu.m7019e.moviedb.v24.model.Movie
 import com.ltu.m7019e.moviedb.v24.ui.screens.MovieDetailScreen
+import com.ltu.m7019e.moviedb.v24.ui.screens.MovieDetailScreen2
 import com.ltu.m7019e.moviedb.v24.ui.screens.MovieListScreen
 import com.ltu.m7019e.moviedb.v24.viewmodel.MovieDBViewModel
 
 enum class MovieDBScreen(@StringRes val title: Int) {
     List(title = R.string.app_name),
-    Detail(title = R.string.movie_Detail)
+    Detail(title = R.string.movie_Detail),
+    Detail2(title = R.string.movie_Detail2) // 새로운 enum 추가
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -105,13 +109,26 @@ fun TheMovieDBApp(
             }
             composable(route = MovieDBScreen.Detail.name) {
                 uiState.selectedMovie?.let { movie ->
+                    // 기본적으로 MovieDetailScreen을 렌더링
                     MovieDetailScreen(
                         movie = movie,
-                        modifier = Modifier
+                        modifier = Modifier,
+                        onMovieDetailClicked = {
+                            // MovieDetailScreen2로 이동하는 로직
+                            navController.navigate(MovieDBScreen.Detail2.name)
+                        }
+                    )
+                }
+            }
+            composable(route = MovieDBScreen.Detail2.name) {
+                uiState.selectedMovie?.let { movie ->
+                    // MovieDetailScreen2 렌더링
+                    MovieDetailScreen2(
+                        movie = movie,
+                        modifier = Modifier.fillMaxHeight()
                     )
                 }
             }
         }
-
     }
 }
