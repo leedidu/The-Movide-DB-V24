@@ -21,5 +21,5 @@ data class Movie(
     var releaseDate: String,
 
     @SerialName(value = "overview")
-    var overview: String
+    var overview: String,
 )

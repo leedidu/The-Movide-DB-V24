@@ -12,6 +12,8 @@ import androidx.lifecycle.viewmodel.viewModelFactory
 import com.ltu.m7019e.moviedb.v24.MovieDBApplication
 import com.ltu.m7019e.moviedb.v24.database.MoviesRepository
 import com.ltu.m7019e.moviedb.v24.model.Movie
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
 import java.io.IOException
@@ -59,10 +61,8 @@ class MovieDBViewModel(private val moviesRepository: MoviesRepository) : ViewMod
             movieListUiState = try {
                 MovieListUiState.Success(moviesRepository.getPopularMovies().results)
             } catch (e: IOException) {
-                Log.e("왓햅뻔","omg", e)
                 MovieListUiState.Error
             } catch (e: HttpException) {
-                Log.e("왓햅뻔","omg", e)
                 MovieListUiState.Error
             }
         }
