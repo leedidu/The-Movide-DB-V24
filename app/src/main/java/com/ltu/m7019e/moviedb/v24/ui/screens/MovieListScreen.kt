@@ -24,30 +24,54 @@ import coil.compose.AsyncImage
 import com.ltu.m7019e.moviedb.v24.model.Movie
 import com.ltu.m7019e.moviedb.v24.ui.theme.TheMovideDBV24Theme
 import com.ltu.m7019e.moviedb.v24.utils.Constants
+import com.ltu.m7019e.moviedb.v24.viewmodel.MovieListUiState
 
 @Composable
-fun MovieListScreen(
-    movieList: List<Movie>,
-    onMovieListItemClicked: (Movie) -> Unit,
-    modifier: Modifier = Modifier
+fun MovieListScreen(movieListUiState: MovieListUiState,
+                    onMovieListItemClicked: (Movie) -> Unit,
+                    modifier: Modifier = Modifier
 ) {
     LazyColumn(modifier = modifier) {
-        items(movieList) { movie ->
-            MovieListItemCard(
-                movie = movie,
-                onMovieListItemClicked,
-                modifier = Modifier.padding(8.dp)
-            )
+
+        when(movieListUiState) {
+            is MovieListUiState.Success -> {
+                items(movieListUiState.movies) { movie ->
+                    MovieListItemCard(
+                        movie = movie,
+                        onMovieListItemClicked,
+                        modifier = Modifier.padding(8.dp)
+                    )
+                }
+            }
+
+            is MovieListUiState.Loading -> {
+                item {
+                    Text(
+                        text = "Loading...",
+                        style = MaterialTheme.typography.bodySmall,
+                        modifier = Modifier.padding(16.dp)
+                    )
+                }
+            }
+
+            is MovieListUiState.Error -> {
+                item {
+                    Text(
+                        text = "Error: Something went wrong!",
+                        style = MaterialTheme.typography.bodySmall,
+                        modifier = Modifier.padding(16.dp)
+                    )
+                }
+            }
         }
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MovieListItemCard(
-    movie: Movie,
-    onMovieListItemClicked: (Movie) -> Unit,
-    modifier: Modifier = Modifier
+fun MovieListItemCard(movie: Movie,
+                      onMovieListItemClicked: (Movie) -> Unit,
+                      modifier: Modifier = Modifier
 ) {
     Card(
         modifier = modifier,
@@ -91,23 +115,16 @@ fun MovieListItemCard(
 
 @Preview(showBackground = true)
 @Composable
-fun MovieItemPreview() {
+fun GreetingPreview() {
     TheMovideDBV24Theme {
         MovieListItemCard(
             movie = Movie(
-                693134,
-                "Dune: Part Two",
-                "/1pdfLvkbY9ohJlCjQH2CZjjYVvJ.jpg",
-                "/xOMo8BRK7PfcJv9JCnx7s5hj0PX.jpg",
-                "2024-02-27",
-                "Follow the mythic journey of Paul Atreides as he unites with Chani and the Fremen while on a path of revenge against the conspirators who destroyed his family. Facing a choice between the love of his life and the fate of the known universe, Paul endeavors to prevent a terrible future only he can foresee.",
-                false,
-                "190000000",
-                listOf(("Science Fiction"),
-                    ("Adventure")),
-                "https://www.dunemovie.com",
-                "tt15239678",
-                "en"
+                1,
+                "Raya and the Last Dragon",
+                "/lPsD10PP4rgUGiGR4CCXA6iY0QQ.jpg",
+                "/9xeEGUZjgiKlI69jwIOi0hjKUIk.jpg",
+                "2021-03-03",
+                "Long ago, in the fantasy world of Kumandra, humans and dragons lived together in harmony. But when an evil force threatened the land, the dragons sacrificed themselves to save humanity. Now, 500 years later, that same evil has returned and it’s up to a lone warrior, Raya, to track down the legendary last dragon to restore the fractured land and its divided people."
             ), {}
         )
     }
