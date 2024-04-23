@@ -1,6 +1,6 @@
 package com.ltu.m7019e.moviedb.v24.viewmodel
 
-import android.util.Log
+import MoviesRepository
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -10,10 +10,8 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.ltu.m7019e.moviedb.v24.MovieDBApplication
-import com.ltu.m7019e.moviedb.v24.database.MoviesRepository
 import com.ltu.m7019e.moviedb.v24.model.Movie
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
+import com.ltu.m7019e.moviedb.v24.model.Review
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
 import java.io.IOException
@@ -24,10 +22,22 @@ sealed interface MovieListUiState {
     object Loading : MovieListUiState
 }
 
+sealed interface ReviewListUiState{
+    data class Success(val reviews: List<Review>) : ReviewListUiState
+    object Error : ReviewListUiState
+    object Loading : ReviewListUiState
+}
+
 sealed interface SelectedMovieUiState {
     data class Success(val movie: Movie) : SelectedMovieUiState
     object Error : SelectedMovieUiState
     object Loading : SelectedMovieUiState
+}
+
+sealed interface SelectedReviewUiState {
+    data class Success(val review: Review) : SelectedReviewUiState
+    object Error : SelectedReviewUiState
+    object Loading : SelectedReviewUiState
 }
 
 class MovieDBViewModel(private val moviesRepository: MoviesRepository) : ViewModel() {
@@ -36,6 +46,9 @@ class MovieDBViewModel(private val moviesRepository: MoviesRepository) : ViewMod
         private set
 
     var selectedMovieUiState: SelectedMovieUiState by mutableStateOf(SelectedMovieUiState.Loading)
+        private set
+
+    var reivewUiState: ReviewListUiState by mutableStateOf(ReviewListUiState.Loading)
         private set
 
     init {
@@ -64,6 +77,19 @@ class MovieDBViewModel(private val moviesRepository: MoviesRepository) : ViewMod
                 MovieListUiState.Error
             } catch (e: HttpException) {
                 MovieListUiState.Error
+            }
+        }
+    }
+
+    fun getReviews(movie: Movie) {
+        viewModelScope.launch {
+            reivewUiState = ReviewListUiState.Loading // movieReviewUiState로 업데이트
+            reivewUiState = try {
+                ReviewListUiState.Success(moviesRepository.getReviews(movie.id).results) // ReviewListUiState로 업데이트
+            } catch (e: IOException) {
+                ReviewListUiState.Error
+            } catch (e: HttpException) {
+                ReviewListUiState.Error
             }
         }
     }

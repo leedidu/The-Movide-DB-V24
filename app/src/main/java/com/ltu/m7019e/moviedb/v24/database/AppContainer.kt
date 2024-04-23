@@ -1,5 +1,7 @@
 package com.ltu.m7019e.moviedb.v24.database
 
+import MoviesRepository
+import NetworkMoviesRepository
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import com.ltu.m7019e.moviedb.v24.network.MovieDBApiService
 import com.ltu.m7019e.moviedb.v24.utils.Constants
@@ -29,7 +31,6 @@ class DefaultAppContainer : AppContainer {
             okhttp3.OkHttpClient.Builder()
                 .addInterceptor { chain ->
                     val original = chain.request()
-                    // 헤더 추가
                     val requestBuilder = original.newBuilder()
                         .header("Authorization", "Bearer ${Constants.API_KEY}")
                     val request = requestBuilder.build()

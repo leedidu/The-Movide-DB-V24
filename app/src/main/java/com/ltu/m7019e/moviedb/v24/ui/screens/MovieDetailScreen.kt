@@ -22,19 +22,19 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.AnnotatedString
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.style.TextDecoration
+import androidx.navigation.NavHostController
+import com.ltu.m7019e.moviedb.v24.MovieDBScreen
 import com.ltu.m7019e.moviedb.v24.model.Movie
+import com.ltu.m7019e.moviedb.v24.model.Review
 import com.ltu.m7019e.moviedb.v24.utils.Constants
 import com.ltu.m7019e.moviedb.v24.viewmodel.SelectedMovieUiState
 
 @Composable
 fun MovieDetailScreen(
     selectedMovieUiState: SelectedMovieUiState,
+    navController: NavHostController, // navController 추가
     modifier: Modifier = Modifier,
-//    onMovieDetailClicked: (Movie) -> Unit
+    onReviewDetailClicked: (Movie) -> Unit
 ) {
     when (selectedMovieUiState) {
         is SelectedMovieUiState.Success -> {
@@ -64,17 +64,20 @@ fun MovieDetailScreen(
                     overflow = TextOverflow.Ellipsis,
                 )
                 Spacer(modifier = Modifier.size(8.dp))
-//                Box(
-//                    modifier = Modifier
-//                        .fillMaxWidth()
-//                        .padding(16.dp)
-//                ){
-//                    Button(onClick = { onMovieDetailClicked(selectedMovieUiState.movie) },
-//                        modifier = Modifier.align(Alignment.Center)
-//                    ) {
-//                        Text(text = "More Detail")
-//                    }
-//                }
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp)
+                ){
+                    Button(onClick = {
+                        onReviewDetailClicked(selectedMovieUiState.movie) // 영화를 선택하면 해당 영화의 리뷰를 가져옵니다.
+                        navController.navigate(MovieDBScreen.Detail2.name)
+                    },
+                        modifier = Modifier.align(Alignment.Center)
+                    ) {
+                        Text(text = "More Detail")
+                    }
+                }
             }
         }
         is SelectedMovieUiState.Loading -> {
