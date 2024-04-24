@@ -86,7 +86,7 @@ fun MovieDetailScreen(
                     Row {
                         Spacer(modifier = Modifier.size(8.dp))
                         Text(
-                            text = "budget: ${selectedMovieDetailUiState.detail.budget}}",
+                            text = "budget: ${selectedMovieDetailUiState.detail.budget}",
                             style = MaterialTheme.typography.bodySmall,
                             overflow = TextOverflow.Ellipsis
                         )
@@ -95,7 +95,7 @@ fun MovieDetailScreen(
                     Row {
                         Spacer(modifier = Modifier.size(8.dp))
                         Text(
-                            text = "adult: ${selectedMovieDetailUiState.detail.adult}}",
+                            text = "adult: ${selectedMovieDetailUiState.detail.adult}",
                             style = MaterialTheme.typography.bodySmall,
                             overflow = TextOverflow.Ellipsis
                         )
