@@ -25,12 +25,14 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.ltu.m7019e.moviedb.v24.ui.screens.MovieDetailScreen
-import com.ltu.m7019e.moviedb.v24.ui.screens.MovieListScreen
+import com.ltu.m7019e.moviedb.v24.ui.screens.MovieGridScreen
+import com.ltu.m7019e.moviedb.v24.ui.screens.MovieReviewScreen
 import com.ltu.m7019e.moviedb.v24.viewmodel.MovieDBViewModel
 
 enum class MovieDBScreen(@StringRes val title: Int) {
     List(title = R.string.app_name),
-    Detail(title = R.string.movie_detail)
+    Detail(title = R.string.movie_detail),
+    Detail2(title = R.string.movie_detail2)
 }
 
 
@@ -94,10 +96,11 @@ fun MovieDBApp(
                 .padding(innerPadding)
         ) {
             composable(route = MovieDBScreen.List.name) {
-                MovieListScreen(
+                MovieGridScreen(
                     movieListUiState = movieDBViewModel.movieListUiState,
                     onMovieListItemClicked = {
                         movieDBViewModel.setSelectedMovie(it)
+                        movieDBViewModel.getDetails(it)
                         navController.navigate(MovieDBScreen.Detail.name)
                     },
                     modifier = Modifier
@@ -108,9 +111,22 @@ fun MovieDBApp(
             composable(route = MovieDBScreen.Detail.name) {
                 MovieDetailScreen(
                     selectedMovieUiState = movieDBViewModel.selectedMovieUiState,
-                    modifier = Modifier
+                    selectedMovieDetailUiState = movieDBViewModel.detailUiState,
+                    modifier = Modifier,
+                    navController = navController, // navController 전달
+                    onReviewDetailClicked = {
+                        movieDBViewModel.getVideos(it)
+                        movieDBViewModel.getReviews(it)
+                        navController.navigate(MovieDBScreen.Detail2.name)
+                    }
                 )
+            }
+            composable(route = MovieDBScreen.Detail2.name) {
+                MovieReviewScreen(
+                    reviewUiState = movieDBViewModel.reivewUiState,
+                    videoListUiState = movieDBViewModel.videoUiState
+                    )
+                }
             }
         }
     }
-}

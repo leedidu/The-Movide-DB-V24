@@ -6,7 +6,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class Movie(
     @SerialName(value = "id")
-    var id: Long = 0L,
+    var id: Int,
 
     @SerialName(value = "title")
     var title: String,
@@ -21,5 +21,5 @@ data class Movie(
     var releaseDate: String,
 
     @SerialName(value = "overview")
-    var overview: String
+    var overview: String,
 )

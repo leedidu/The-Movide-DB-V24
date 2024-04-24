@@ -73,6 +73,10 @@ dependencies {
     implementation("com.squareup.okhttp3:logging-interceptor:4.9.2")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.1")
 
+    // in .kts
+    implementation("androidx.media3:media3-exoplayer:1.2.0")
+    implementation("androidx.media3:media3-ui:1.2.0")
+
     // Navigation
     implementation(libs.androidx.navigation.runtime.ktx)
     implementation(libs.androidx.navigation.compose)
