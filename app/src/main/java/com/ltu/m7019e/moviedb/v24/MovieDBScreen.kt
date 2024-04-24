@@ -100,6 +100,7 @@ fun MovieDBApp(
                     movieListUiState = movieDBViewModel.movieListUiState,
                     onMovieListItemClicked = {
                         movieDBViewModel.setSelectedMovie(it)
+                        movieDBViewModel.getDetails(it)
                         navController.navigate(MovieDBScreen.Detail.name)
                     },
                     modifier = Modifier
@@ -110,9 +111,11 @@ fun MovieDBApp(
             composable(route = MovieDBScreen.Detail.name) {
                 MovieDetailScreen(
                     selectedMovieUiState = movieDBViewModel.selectedMovieUiState,
+                    selectedMovieDetailUiState = movieDBViewModel.detailUiState,
                     modifier = Modifier,
                     navController = navController, // navController 전달
                     onReviewDetailClicked = {
+                        movieDBViewModel.getVideos(it)
                         movieDBViewModel.getReviews(it)
                         navController.navigate(MovieDBScreen.Detail2.name)
                     }
@@ -121,6 +124,7 @@ fun MovieDBApp(
             composable(route = MovieDBScreen.Detail2.name) {
                 MovieReviewScreen(
                     reviewUiState = movieDBViewModel.reivewUiState,
+                    videoListUiState = movieDBViewModel.videoUiState
                     )
                 }
             }

@@ -1,11 +1,13 @@
 package com.ltu.m7019e.moviedb.v24.ui.screens
 
+import MoviesRepository
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -22,17 +24,23 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.navigation.NavHostController
 import com.ltu.m7019e.moviedb.v24.MovieDBScreen
 import com.ltu.m7019e.moviedb.v24.model.Movie
 import com.ltu.m7019e.moviedb.v24.model.Review
 import com.ltu.m7019e.moviedb.v24.utils.Constants
+import com.ltu.m7019e.moviedb.v24.viewmodel.DetailUiState
 import com.ltu.m7019e.moviedb.v24.viewmodel.SelectedMovieUiState
 
 @Composable
 fun MovieDetailScreen(
     selectedMovieUiState: SelectedMovieUiState,
-    navController: NavHostController, // navController 추가
+    selectedMovieDetailUiState: DetailUiState,
+    navController: NavHostController,
     modifier: Modifier = Modifier,
     onReviewDetailClicked: (Movie) -> Unit
 ) {
@@ -64,18 +72,61 @@ fun MovieDetailScreen(
                     overflow = TextOverflow.Ellipsis,
                 )
                 Spacer(modifier = Modifier.size(8.dp))
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp)
-                ){
-                    Button(onClick = {
-                        onReviewDetailClicked(selectedMovieUiState.movie) // 영화를 선택하면 해당 영화의 리뷰를 가져옵니다.
-                        navController.navigate(MovieDBScreen.Detail2.name)
-                    },
-                        modifier = Modifier.align(Alignment.Center)
+
+                if (selectedMovieDetailUiState is DetailUiState.Success) {
+                    Row {
+                        Spacer(modifier = Modifier.size(8.dp))
+                        Text(
+                            text = "Genres: ${selectedMovieDetailUiState.detail.genres.joinToString { genre -> genre.name }}",
+                            style = MaterialTheme.typography.bodySmall,
+                            overflow = TextOverflow.Ellipsis,
+                        )
+                    }
+                    Spacer(modifier = Modifier.size(8.dp))
+                    Row {
+                        Spacer(modifier = Modifier.size(8.dp))
+                        Text(
+                            text = "budget: ${selectedMovieDetailUiState.detail.budget}}",
+                            style = MaterialTheme.typography.bodySmall,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                            }
+                    Spacer(modifier = Modifier.size(8.dp))
+                    Row {
+                        Spacer(modifier = Modifier.size(8.dp))
+                        Text(
+                            text = "adult: ${selectedMovieDetailUiState.detail.adult}}",
+                            style = MaterialTheme.typography.bodySmall,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                    }
+                    Spacer(modifier = Modifier.size(8.dp))
+                    Column(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        Text(text = "More Detail")
+                        WebsiteLink(selectedMovieDetailUiState)
+                    }
+                    Spacer(modifier = Modifier.size(8.dp))
+                    Column(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        IMDbLink(selectedMovieDetailUiState)
+                    }
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp)
+                    ){
+                        Button(onClick = {
+                            onReviewDetailClicked(selectedMovieUiState.movie) // 영화를 선택하면 해당 영화의 리뷰를 가져옵니다.
+                            navController.navigate(MovieDBScreen.Detail2.name)
+                        },
+                            modifier = Modifier.align(Alignment.Center)
+                        ) {
+                            Text(text = "More Detail")
+                        }
                     }
                 }
             }
@@ -97,23 +148,41 @@ fun MovieDetailScreen(
     }
 }
 
-//@Composable
-//fun WebsiteLink(movie: Movie) {
-//    val context = LocalContext.current
-//    ClickableText(
-//        text = AnnotatedString("Go to website"),
-//        onClick = {
-//            val uri = Uri.parse(movie.homepage)
-//            val intent = Intent(Intent.ACTION_VIEW, uri)
-//            context.startActivity(intent)
-//        },
-//        style = TextStyle(textDecoration = TextDecoration.Underline)
-//    )
-//}
-//
+@Composable
+fun WebsiteLink(detailState: DetailUiState) {
+    val context = LocalContext.current
+
+    if (detailState is DetailUiState.Success) {
+        // 상태가 성공적으로 데이터를 가져온 경우에만 링크를 활성화
+        val homepageUrl = detailState.detail.homepage
+        if (homepageUrl.isNotEmpty()) {
+            ClickableText(
+                text = AnnotatedString("Go to website"),
+                onClick = {
+                    val uri = Uri.parse(homepageUrl)
+                    val intent = Intent(Intent.ACTION_VIEW, uri)
+                    context.startActivity(intent)
+                },
+                style = TextStyle(textDecoration = TextDecoration.Underline)
+            )
+        } else {
+            Text(
+                text = "No website available",
+                style = TextStyle(textDecoration = TextDecoration.None)
+            )
+        }
+    } else if (detailState is DetailUiState.Loading) {
+        Text("Loading website link...")
+    } else {
+        Text("Website link not available")
+    }
+}
+
+
 //@Composable
 //fun IMDbLink(movie: Movie) {
 //    val context = LocalContext.current
+//    val detail =
 //    val imdbAppUrl = "imdb:///title/${movie.imdbId}/"
 //    val imdbWebUrl = "https://www.imdb.com/title/${movie.imdbId}/"
 //    ClickableText(
@@ -136,3 +205,32 @@ fun MovieDetailScreen(
 //        style = TextStyle(textDecoration = TextDecoration.Underline)
 //    )
 //}
+@Composable
+fun IMDbLink(detailState: DetailUiState) {
+    val context = LocalContext.current
+
+    if (detailState is DetailUiState.Success) {
+        val imdbId = detailState.detail.imdbId
+        val imdbAppUrl = "imdb:///title/$imdbId/"
+        val imdbWebUrl = "https://www.imdb.com/title/$imdbId/"
+
+        ClickableText(
+            text = AnnotatedString("Open IMDB"),
+            onClick = {
+                try {
+                    context.packageManager.getPackageInfo("com.imdb.mobile", 0)
+                    val uri = Uri.parse(imdbAppUrl)
+                    val intent = Intent(Intent.ACTION_VIEW, uri).apply {
+                        `package` = "com.imdb.mobile"
+                    }
+                    context.startActivity(intent)
+                } catch (e: PackageManager.NameNotFoundException) {
+                    val uri = Uri.parse(imdbWebUrl)
+                    val intent = Intent(Intent.ACTION_VIEW, uri)
+                    context.startActivity(intent)
+                }
+            },
+            style = TextStyle(textDecoration = TextDecoration.Underline)
+        )
+    }
+}

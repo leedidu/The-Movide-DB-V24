@@ -113,19 +113,21 @@ fun MovieListItemCard(movie: Movie,
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    TheMovieDBV24Theme {
-        MovieListItemCard(
-            movie = Movie(
-                693134,
-                "Dune: Part Two",
-                "/1pdfLvkbY9ohJlCjQH2CZjjYVvJ.jpg",
-                "/xOMo8BRK7PfcJv9JCnx7s5hj0PX.jpg",
-                "2024-02-27",
-                "Follow the mythic journey of Paul Atreides as he unites with Chani and the Fremen while on a path of revenge against the conspirators who destroyed his family. Facing a choice between the love of his life and the fate of the known universe, Paul endeavors to prevent a terrible future only he can foresee.",
-            ), {}
-        )
-    }
-}
+//@Preview(showBackground = true)
+//@Composable
+//fun GreetingPreview() {
+//    TheMovieDBV24Theme {
+//        MovieListItemCard(
+//            movie = Movie(
+//                693134,
+//                "Dune: Part Two",
+//                "/1pdfLvkbY9ohJlCjQH2CZjjYVvJ.jpg",
+//                "/xOMo8BRK7PfcJv9JCnx7s5hj0PX.jpg",
+//                "2024-02-27",
+//                "Follow the mythic journey of Paul Atreides as he unites with Chani and the Fremen while on a path of revenge against the conspirators who destroyed his family. Facing a choice between the love of his life and the fate of the known universe, Paul endeavors to prevent a terrible future only he can foresee.",
+//                "www.abc.com",
+//                1
+//            ), {}
+//        )
+//    }
+//}

@@ -1,6 +1,7 @@
 package com.ltu.m7019e.moviedb.v24.viewmodel
 
 import MoviesRepository
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -10,8 +11,10 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.ltu.m7019e.moviedb.v24.MovieDBApplication
+import com.ltu.m7019e.moviedb.v24.model.Details
 import com.ltu.m7019e.moviedb.v24.model.Movie
 import com.ltu.m7019e.moviedb.v24.model.Review
+import com.ltu.m7019e.moviedb.v24.model.Video
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
 import java.io.IOException
@@ -34,10 +37,16 @@ sealed interface SelectedMovieUiState {
     object Loading : SelectedMovieUiState
 }
 
-sealed interface SelectedReviewUiState {
-    data class Success(val review: Review) : SelectedReviewUiState
-    object Error : SelectedReviewUiState
-    object Loading : SelectedReviewUiState
+sealed interface VideoListUiState {
+    data class Success(val video: List<Video>) : VideoListUiState
+    object Error : VideoListUiState
+    object Loading : VideoListUiState
+}
+
+sealed interface DetailUiState {
+    data class Success(val detail: Details) : DetailUiState
+    object Error : DetailUiState
+    object Loading : DetailUiState
 }
 
 class MovieDBViewModel(private val moviesRepository: MoviesRepository) : ViewModel() {
@@ -49,6 +58,12 @@ class MovieDBViewModel(private val moviesRepository: MoviesRepository) : ViewMod
         private set
 
     var reivewUiState: ReviewListUiState by mutableStateOf(ReviewListUiState.Loading)
+        private set
+
+    var videoUiState: VideoListUiState by mutableStateOf(VideoListUiState.Loading)
+        private set
+
+    var detailUiState: DetailUiState by mutableStateOf(DetailUiState.Loading)
         private set
 
     init {
@@ -90,6 +105,34 @@ class MovieDBViewModel(private val moviesRepository: MoviesRepository) : ViewMod
                 ReviewListUiState.Error
             } catch (e: HttpException) {
                 ReviewListUiState.Error
+            }
+        }
+    }
+
+    fun getVideos(movie: Movie){
+        viewModelScope.launch {
+            videoUiState = VideoListUiState.Loading
+            videoUiState = try {
+                Log.d("확인", movie.id.toString())
+                VideoListUiState.Success(moviesRepository.getVideos(movie.id).results) // ReviewListUiState로 업데이트
+            } catch (e: IOException) {
+                VideoListUiState.Error
+            } catch (e: HttpException) {
+                VideoListUiState.Error
+            }
+        }
+    }
+
+    fun getDetails(movie: Movie){
+        viewModelScope.launch {
+            detailUiState = DetailUiState.Loading
+            detailUiState = try {
+//                DetailUiState.Success(moviesRepository.getDetails(movie.id).homepage, moviesRepository.getDetails(movie.id).adult, moviesRepository.getDetails(movie.id).budget, moviesRepository.getDetails(movie.id).genres, moviesRepository.getDetails(movie.id).imdbId) // ReviewListUiState로 업데이트
+                DetailUiState.Success(moviesRepository.getDetails(movie.id))
+            } catch (e: IOException) {
+                DetailUiState.Error
+            } catch (e: HttpException) {
+                DetailUiState.Error
             }
         }
     }

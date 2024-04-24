@@ -31,6 +31,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.ltu.m7019e.moviedb.v24.R
+import com.ltu.m7019e.moviedb.v24.model.Details
 import com.ltu.m7019e.moviedb.v24.model.Movie
 import com.ltu.m7019e.moviedb.v24.ui.theme.TheMovieDBV24Theme
 import com.ltu.m7019e.moviedb.v24.utils.Constants
@@ -130,19 +131,24 @@ fun MovieGridItemCard(movie: Movie,
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun GridPreview() {
-    TheMovieDBV24Theme {
-        MovieGridItemCard(
-            movie = Movie(
-                693134,
-                "Dune: Part Two",
-                "/1pdfLvkbY9ohJlCjQH2CZjjYVvJ.jpg",
-                "/xOMo8BRK7PfcJv9JCnx7s5hj0PX.jpg",
-                "2024-02-27",
-                "Follow the mythic journey of Paul Atreides as he unites with Chani and the Fremen while on a path of revenge against the conspirators who destroyed his family. Facing a choice between the love of his life and the fate of the known universe, Paul endeavors to prevent a terrible future only he can foresee.",
-            ), {}
-        )
-    }
-}
+//@Preview(showBackground = true)
+//@Composable
+//fun GridPreview() {
+//    TheMovieDBV24Theme {
+//        MovieGridItemCard(
+//            movie = Movie(
+//                693134,
+//                "Dune: Part Two",
+//                "/1pdfLvkbY9ohJlCjQH2CZjjYVvJ.jpg",
+//                "/xOMo8BRK7PfcJv9JCnx7s5hj0PX.jpg",
+//                "2024-02-27",
+//                "Follow the mythic journey of Paul Atreides as he unites with Chani and the Fremen while on a path of revenge against the conspirators who destroyed his family. Facing a choice between the love of his life and the fate of the known universe, Paul endeavors to prevent a terrible future only he can foresee.",
+//            ),
+//            detail = Details (
+//                true,
+//                123,
+//
+//            ){}
+//        )
+//    }
+//}
