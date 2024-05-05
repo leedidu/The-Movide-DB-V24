@@ -24,18 +24,18 @@ interface MovieDBApiService {
     @GET("{movie_id}/reviews")
     suspend fun getReviews(
         @Path("movie_id")
-        movieId: Int
+        movieId: Long
     ): ReviewResponse
 
     @GET("{movie_id}")
     suspend fun getDetails(
         @Path("movie_id")
-        movieId: Int
+        movieId: Long
     ): Details
 
     @GET("{movie_id}/videos")
     suspend fun getVideos(
         @Path("movie_id")
-        movieId: Int
+        movieId: Long
     ): VideoResponse
 }
