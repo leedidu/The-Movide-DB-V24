@@ -110,7 +110,7 @@ fun MovieDBApp(
             }
             composable(route = MovieDBScreen.Detail.name) {
                 MovieDetailScreen(
-                    selectedMovieUiState = movieDBViewModel.selectedMovieUiState,
+                    movieDBViewModel = movieDBViewModel,
                     selectedMovieDetailUiState = movieDBViewModel.detailUiState,
                     modifier = Modifier,
                     navController = navController, // navController 전달
@@ -125,8 +125,8 @@ fun MovieDBApp(
                 MovieReviewScreen(
                     reviewUiState = movieDBViewModel.reivewUiState,
                     videoListUiState = movieDBViewModel.videoUiState
-                    )
-                }
+                )
             }
         }
     }
+}

@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -34,16 +35,18 @@ import com.ltu.m7019e.moviedb.v24.model.Movie
 import com.ltu.m7019e.moviedb.v24.model.Review
 import com.ltu.m7019e.moviedb.v24.utils.Constants
 import com.ltu.m7019e.moviedb.v24.viewmodel.DetailUiState
+import com.ltu.m7019e.moviedb.v24.viewmodel.MovieDBViewModel
 import com.ltu.m7019e.moviedb.v24.viewmodel.SelectedMovieUiState
 
 @Composable
 fun MovieDetailScreen(
-    selectedMovieUiState: SelectedMovieUiState,
+    movieDBViewModel: MovieDBViewModel,
     selectedMovieDetailUiState: DetailUiState,
     navController: NavHostController,
     modifier: Modifier = Modifier,
     onReviewDetailClicked: (Movie) -> Unit
 ) {
+    val selectedMovieUiState = movieDBViewModel.selectedMovieUiState
     when (selectedMovieUiState) {
         is SelectedMovieUiState.Success -> {
             Column(Modifier.width(IntrinsicSize.Max)) {
@@ -127,6 +130,19 @@ fun MovieDetailScreen(
                         ) {
                             Text(text = "More Detail")
                         }
+                    }
+                    Spacer(modifier = Modifier.size(8.dp))
+                    Row {
+                        Text(
+                            text = "Favorite",
+                            style = MaterialTheme.typography.bodyLarge
+                        )
+                        Switch(checked = selectedMovieUiState.isFavorite, onCheckedChange = {
+                            if (it)
+                                movieDBViewModel.saveMovie(selectedMovieUiState.movie)
+                            else
+                                movieDBViewModel.deleteMovie(selectedMovieUiState.movie)
+                        })
                     }
                 }
             }
