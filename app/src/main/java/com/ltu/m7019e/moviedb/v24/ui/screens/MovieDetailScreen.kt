@@ -1,9 +1,9 @@
 package com.ltu.m7019e.moviedb.v24.ui.screens
 
-import MoviesRepository
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
@@ -32,7 +32,6 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.navigation.NavHostController
 import com.ltu.m7019e.moviedb.v24.MovieDBScreen
 import com.ltu.m7019e.moviedb.v24.model.Movie
-import com.ltu.m7019e.moviedb.v24.model.Review
 import com.ltu.m7019e.moviedb.v24.utils.Constants
 import com.ltu.m7019e.moviedb.v24.viewmodel.DetailUiState
 import com.ltu.m7019e.moviedb.v24.viewmodel.MovieDBViewModel
@@ -47,10 +46,14 @@ fun MovieDetailScreen(
     onReviewDetailClicked: (Movie) -> Unit
 ) {
     val selectedMovieUiState = movieDBViewModel.selectedMovieUiState
+
     when (selectedMovieUiState) {
         is SelectedMovieUiState.Success -> {
             Column(Modifier.width(IntrinsicSize.Max)) {
-                Box(Modifier.fillMaxWidth().padding(0.dp)) {
+                Box(
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(0.dp)) {
                     AsyncImage(
                         model = Constants.BACKDROP_IMAGE_BASE_URL + Constants.BACKDROP_IMAGE_WIDTH + selectedMovieUiState.movie.backdropPath,
                         contentDescription = selectedMovieUiState.movie.title,
@@ -132,17 +135,26 @@ fun MovieDetailScreen(
                         }
                     }
                     Spacer(modifier = Modifier.size(8.dp))
-                    Row {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(), // Row가 화면 너비를 꽉 채우도록 설정
+                        verticalAlignment = Alignment.CenterVertically, // 세로 방향 중앙 정렬
+                        horizontalArrangement = Arrangement.Center // 가로 방향 중앙 정렬
+                    ) {
                         Text(
                             text = "Favorite",
-                            style = MaterialTheme.typography.bodyLarge
+                            style = MaterialTheme.typography.bodyLarge,
+                            modifier = Modifier.padding(8.dp)
                         )
-                        Switch(checked = selectedMovieUiState.isFavorite, onCheckedChange = {
-                            if (it)
-                                movieDBViewModel.saveMovie(selectedMovieUiState.movie)
-                            else
-                                movieDBViewModel.deleteMovie(selectedMovieUiState.movie)
-                        })
+                        Switch(
+                            checked = selectedMovieUiState.isFavorite,
+                            onCheckedChange = {
+                                if (it) {
+                                    movieDBViewModel.saveMovie(selectedMovieUiState.movie)
+                                } else {
+                                    movieDBViewModel.deleteMovie(selectedMovieUiState.movie)
+                                }
+                            }
+                        )
                     }
                 }
             }
@@ -194,33 +206,6 @@ fun WebsiteLink(detailState: DetailUiState) {
     }
 }
 
-
-//@Composable
-//fun IMDbLink(movie: Movie) {
-//    val context = LocalContext.current
-//    val detail =
-//    val imdbAppUrl = "imdb:///title/${movie.imdbId}/"
-//    val imdbWebUrl = "https://www.imdb.com/title/${movie.imdbId}/"
-//    ClickableText(
-//        text = AnnotatedString("Open IMDB"),
-//        onClick = {
-//            try {
-//                // check if installed
-//                context.packageManager.getPackageInfo("com.imdb.mobile", 0)
-//                val uri = Uri.parse(imdbAppUrl)
-//                val intent = Intent(Intent.ACTION_VIEW, uri)
-//                intent.`package` = "com.imdb.mobile" // IMDb 앱을 명시적으로 호출
-//                context.startActivity(intent)
-//            } catch (e: PackageManager.NameNotFoundException) {
-//                // if not -> uri
-//                val uri = Uri.parse(imdbWebUrl)
-//                val intent = Intent(Intent.ACTION_VIEW, uri)
-//                context.startActivity(intent)
-//            }
-//        },
-//        style = TextStyle(textDecoration = TextDecoration.Underline)
-//    )
-//}
 @Composable
 fun IMDbLink(detailState: DetailUiState) {
     val context = LocalContext.current

@@ -73,6 +73,7 @@ dependencies {
     implementation("com.squareup.okhttp3:okhttp:4.9.2")
     implementation("com.squareup.okhttp3:logging-interceptor:4.9.2")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.1")
+    implementation("com.google.code.gson:gson:2.8.8")
 
     // Room
     implementation("androidx.room:room-runtime:${rootProject.extra["room_version"]}")
