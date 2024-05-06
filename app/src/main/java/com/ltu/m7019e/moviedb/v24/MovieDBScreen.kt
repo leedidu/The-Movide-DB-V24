@@ -1,5 +1,6 @@
 package com.ltu.m7019e.moviedb.v24
 
+import MoviesRepository
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -17,9 +18,11 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -74,15 +77,13 @@ fun MovieDBAppBar(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MovieTabScreen(
-    navController: NavHostController) {
-    var selectedTabIndex by remember { mutableStateOf(0) }
-    val tabTitles = listOf("Popular", "Top Rated")
+fun MovieTabScreen(navController: NavHostController, viewModel: MovieDBViewModel) {
+    val selectedTabIndex by viewModel.selectedTabIndex.collectAsState(initial = 0)
+    val tabTitles = listOf("Popular", "Top Rated", "Favorite")
     val movieDBViewModel: MovieDBViewModel = viewModel(factory = MovieDBViewModel.Factory)
 
     Column {
-        TopAppBar(title = { Text("Movie Categories") }
-        )
+        TopAppBar(title = { Text("Movie Categories") })
         TabRow(
             selectedTabIndex = selectedTabIndex,
             containerColor = MaterialTheme.colorScheme.background,
@@ -91,14 +92,17 @@ fun MovieTabScreen(
             tabTitles.forEachIndexed { index, title ->
                 Tab(
                     selected = selectedTabIndex == index,
-                    onClick = { selectedTabIndex = index },
+                    onClick = {
+                        viewModel.setSelectedTabIndex(index)
+                    },
                     text = { Text(title) }
                 )
             }
         }
         when (selectedTabIndex) {
-            0 -> movieDBViewModel.getPopularMovies()
-            1 -> movieDBViewModel.getTopRatedMovies()
+            0 -> movieDBViewModel.getPopularMovies() // Popular 탭 컨텐츠
+            1 -> movieDBViewModel.getTopRatedMovies() // Top Rated 탭 컨텐츠
+            2 -> movieDBViewModel.getSavedMovies() // Favorite 탭 컨텐츠
         }
     }
 }
@@ -113,6 +117,9 @@ fun MovieDBApp(
     val currentScreen = MovieDBScreen.valueOf(
         backStackEntry?.destination?.route ?: MovieDBScreen.List.name
     )
+    val movieDBViewModel: MovieDBViewModel = viewModel(factory = MovieDBViewModel.Factory)
+
+    MovieTabScreen(navController = navController, viewModel = movieDBViewModel)
 
     Scaffold(
         topBar = {
@@ -127,7 +134,7 @@ fun MovieDBApp(
 
         Column {
             if (currentScreen == MovieDBScreen.List) {
-                MovieTabScreen(navController = navController)
+                MovieTabScreen(navController = navController, viewModel = viewModel())
             }
             NavHost(
                 navController = navController,

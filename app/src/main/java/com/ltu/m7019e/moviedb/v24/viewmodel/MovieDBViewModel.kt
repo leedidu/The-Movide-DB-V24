@@ -6,6 +6,8 @@ import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
@@ -16,6 +18,8 @@ import com.ltu.m7019e.moviedb.v24.model.Details
 import com.ltu.m7019e.moviedb.v24.model.Movie
 import com.ltu.m7019e.moviedb.v24.model.Review
 import com.ltu.m7019e.moviedb.v24.model.Video
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
 import java.io.IOException
@@ -69,6 +73,13 @@ class MovieDBViewModel(private val moviesRepository: MoviesRepository, private v
 
     init {
         getPopularMovies()
+    }
+
+    private val _selectedTabIndex = MutableStateFlow(0)
+    val selectedTabIndex: Flow<Int> = _selectedTabIndex
+
+    fun setSelectedTabIndex(index: Int) {
+        _selectedTabIndex.value = index
     }
 
     fun getTopRatedMovies() {

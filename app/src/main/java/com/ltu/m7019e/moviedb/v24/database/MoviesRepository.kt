@@ -1,3 +1,4 @@
+import android.util.Log
 import com.ltu.m7019e.moviedb.v24.database.MovieDao
 import com.ltu.m7019e.moviedb.v24.model.Details
 import com.ltu.m7019e.moviedb.v24.model.Movie
@@ -44,7 +45,6 @@ interface SavedMovieRepository {
     suspend fun getMovie(id: Long): Movie
 
     suspend fun deleteMovie(movie: Movie)
-
 }
 
 class FavoriteMoviesRepository(private val movieDao: MovieDao) : SavedMovieRepository {
