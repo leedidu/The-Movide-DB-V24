@@ -18,7 +18,7 @@ data class Details(
     var homepage: String,
 
     @SerialName(value = "imdb_id")
-    var imdbId: String,
+    var imdbId: String?,
 )
 
 @Serializable

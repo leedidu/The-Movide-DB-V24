@@ -57,6 +57,16 @@ fun MovieGridScreen(movieListUiState: MovieListUiState,
                 }
             }
 
+            is MovieListUiState.Empty -> {
+                item {
+                    Text(
+                        text = "Empty: No Favorite Movie",
+                        style = MaterialTheme.typography.bodySmall,
+                        modifier = Modifier.padding(16.dp)
+                    )
+                }
+            }
+
             is MovieListUiState.Loading -> {
                 item {
                     Text(

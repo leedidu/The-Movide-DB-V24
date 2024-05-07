@@ -45,15 +45,23 @@ interface SavedMovieRepository {
     suspend fun getMovie(id: Long): Movie
 
     suspend fun deleteMovie(movie: Movie)
+    suspend fun getMoviesByTap(category: String): List<Movie>
+    suspend fun deleteMoviesByTap(category: String)
+    suspend fun insertLastTappedMovies(movies: List<Movie>, category: String)
+    suspend fun getFavoriteMovies(): List<Movie>
 }
 
 class FavoriteMoviesRepository(private val movieDao: MovieDao) : SavedMovieRepository {
-    override suspend fun getSavedMovies(): List<Movie> {
+    override suspend fun getFavoriteMovies(): List<Movie> {
         return movieDao.getFavoriteMovies()
     }
 
+    override suspend fun getSavedMovies(): List<Movie> {
+        return movieDao.getMovies()
+    }
+
     override suspend fun insertMovie(movie: Movie) {
-        movieDao.insertFavoriteMovie(movie)
+        movieDao.insertFavoriteMovie(movie.id)
     }
 
     override suspend fun getMovie(id: Long): Movie {
@@ -62,5 +70,18 @@ class FavoriteMoviesRepository(private val movieDao: MovieDao) : SavedMovieRepos
 
     override suspend fun deleteMovie(movie: Movie) {
         movieDao.deleteFavoriteMovie(movie.id)
+    }
+
+    override suspend fun getMoviesByTap(category: String): List<Movie> {
+        return movieDao.getMoviesByCategory(category)
+    }
+
+    override suspend fun insertLastTappedMovies(movies: List<Movie>, category: String){
+        movies.forEach { it.category = category }  // 각 영화 객체에 카테고리 설정
+        movieDao.insertMovies(movies)
+    }
+
+    override suspend fun deleteMoviesByTap(category: String) {
+        movieDao.deleteMoviesByCategory(category)
     }
 }
