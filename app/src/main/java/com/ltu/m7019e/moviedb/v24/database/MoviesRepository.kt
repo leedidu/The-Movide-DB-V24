@@ -77,7 +77,7 @@ class FavoriteMoviesRepository(private val movieDao: MovieDao) : SavedMovieRepos
     }
 
     override suspend fun insertLastTappedMovies(movies: List<Movie>, category: String){
-        movies.forEach { it.category = category }  // 각 영화 객체에 카테고리 설정
+        movies.forEach { it.category = category }
         movieDao.insertMovies(movies)
     }
 

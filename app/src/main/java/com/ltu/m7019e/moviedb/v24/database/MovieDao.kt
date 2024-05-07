@@ -24,7 +24,7 @@ interface MovieDao {
     @Query("DELETE FROM movies WHERE id = :id")
     suspend fun deleteFavoriteMovie(id: Long)
 
-    @Query("SELECT * FROM movies WHERE category = :category")
+    @Query("SELECT * FROM movies WHERE category = :category AND favorite = false")
     suspend fun getMoviesByCategory(category: String): List<Movie>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)

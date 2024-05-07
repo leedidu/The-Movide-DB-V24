@@ -121,35 +121,49 @@ class MovieDBViewModel(
     fun getTopRatedMovies() {
         viewModelScope.launch {
             movieListUiState = MovieListUiState.Loading
-            movieListUiState = try {
-                val movieList = moviesRepository.getTopRatedMovies().results
-                savedMovieRepository.insertLastTappedMovies(movieList, "top_rated")
+            try {
+                val newMovies = moviesRepository.getTopRatedMovies().results
+                val existingFavorites = favoriteMoviesRepository.getFavoriteMovies().map { it.id }.toSet()
+                newMovies.forEach { movie ->
+                    if (movie.id in existingFavorites) {
+                        movie.favorite = true
+                    }
+                }
                 savedMovieRepository.deleteMoviesByTap("popular")
-                MovieListUiState.Success(movieList)
+                savedMovieRepository.insertLastTappedMovies(newMovies, "top_rated")
+                movieListUiState = MovieListUiState.Success(newMovies)
             } catch (e: IOException) {
-                val cashMovies = favoriteMoviesRepository.getMoviesByTap("top_rated")
-                MovieListUiState.Success(cashMovies)
+                val cachedMovies = favoriteMoviesRepository.getMoviesByTap("top_rated")
+                movieListUiState = MovieListUiState.Success(cachedMovies)
             } catch (e: HttpException) {
-                val cashMovies = favoriteMoviesRepository.getMoviesByTap("top_rated")
-                MovieListUiState.Success(cashMovies)
+                val cachedMovies = favoriteMoviesRepository.getMoviesByTap("top_rated")
+                movieListUiState = MovieListUiState.Success(cachedMovies)
             }
         }
     }
 
+
+
     fun getPopularMovies() {
         viewModelScope.launch {
             movieListUiState = MovieListUiState.Loading
-            movieListUiState = try {
-                val movieList = moviesRepository.getPopularMovies().results
-                savedMovieRepository.insertLastTappedMovies(movieList, "popular")
+            try {
+                val newMovies = moviesRepository.getPopularMovies().results
+                val existingFavorites = favoriteMoviesRepository.getFavoriteMovies().map { it.id }.toSet()
+                newMovies.forEach { movie ->
+                    if (movie.id in existingFavorites) {
+                        movie.favorite = true
+                    }
+                }
                 savedMovieRepository.deleteMoviesByTap("top_rated")
-                MovieListUiState.Success(movieList)
+                savedMovieRepository.insertLastTappedMovies(newMovies, "popular")
+                movieListUiState = MovieListUiState.Success(newMovies)
             } catch (e: IOException) {
-                val cashMovies = favoriteMoviesRepository.getMoviesByTap("popular")
-                MovieListUiState.Success(cashMovies)
+                val cachedMovies = favoriteMoviesRepository.getMoviesByTap("popular")
+                movieListUiState = MovieListUiState.Success(cachedMovies)
             } catch (e: HttpException) {
-                val cashMovies = favoriteMoviesRepository.getMoviesByTap("popular")
-                MovieListUiState.Success(cashMovies)
+                val cachedMovies = favoriteMoviesRepository.getMoviesByTap("popular")
+                movieListUiState = MovieListUiState.Success(cachedMovies)
             }
         }
     }
