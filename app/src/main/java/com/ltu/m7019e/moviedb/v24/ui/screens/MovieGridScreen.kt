@@ -44,11 +44,8 @@ fun MovieGridScreen(movieListUiState: MovieListUiState,
 ) {
     LazyVerticalGrid(
         columns = Fixed(2),
-//        verticalArrangement = Arrangement.spacedBy(dimensionResource(8)),
-//        horizontalArrangement = Arrangement.spacedBy(dimensionResource(8)),
         modifier = modifier
     ) {
-
         when(movieListUiState) {
             is MovieListUiState.Success -> {
                 items(movieListUiState.movies) { movie ->
@@ -56,6 +53,16 @@ fun MovieGridScreen(movieListUiState: MovieListUiState,
                         movie = movie,
                         onMovieListItemClicked,
                         modifier = Modifier.padding(8.dp)
+                    )
+                }
+            }
+
+            is MovieListUiState.Empty -> {
+                item {
+                    Text(
+                        text = "Empty: No Favorite Movie",
+                        style = MaterialTheme.typography.bodySmall,
+                        modifier = Modifier.padding(16.dp)
                     )
                 }
             }
@@ -130,25 +137,3 @@ fun MovieGridItemCard(movie: Movie,
         }
     }
 }
-
-//@Preview(showBackground = true)
-//@Composable
-//fun GridPreview() {
-//    TheMovieDBV24Theme {
-//        MovieGridItemCard(
-//            movie = Movie(
-//                693134,
-//                "Dune: Part Two",
-//                "/1pdfLvkbY9ohJlCjQH2CZjjYVvJ.jpg",
-//                "/xOMo8BRK7PfcJv9JCnx7s5hj0PX.jpg",
-//                "2024-02-27",
-//                "Follow the mythic journey of Paul Atreides as he unites with Chani and the Fremen while on a path of revenge against the conspirators who destroyed his family. Facing a choice between the love of his life and the fate of the known universe, Paul endeavors to prevent a terrible future only he can foresee.",
-//            ),
-//            detail = Details (
-//                true,
-//                123,
-//
-//            ){}
-//        )
-//    }
-//}

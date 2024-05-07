@@ -6,7 +6,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-@Entity(tableName = "favorite_movies")
+@Entity(tableName = "movies")
 data class Movie(
     @PrimaryKey
     @SerialName(value = "id")
@@ -25,5 +25,9 @@ data class Movie(
     var releaseDate: String,
 
     @SerialName(value = "overview")
-    var overview: String
+    var overview: String,
+
+    var category: String = "Unknown",
+
+    var favorite: Boolean = false
 )
