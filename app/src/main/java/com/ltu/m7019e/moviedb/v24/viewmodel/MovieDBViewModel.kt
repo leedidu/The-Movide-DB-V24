@@ -13,12 +13,17 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
+import androidx.work.WorkerParameters
 import com.ltu.m7019e.moviedb.v24.MovieDBApplication
+import com.ltu.m7019e.moviedb.v24.database.AppContainer
 import com.ltu.m7019e.moviedb.v24.model.Details
 import com.ltu.m7019e.moviedb.v24.model.Movie
 import com.ltu.m7019e.moviedb.v24.model.Review
 import com.ltu.m7019e.moviedb.v24.model.Video
+import com.ltu.m7019e.moviedb.v24.utils.PreferencesManager
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
 import java.io.IOException
@@ -58,7 +63,7 @@ class MovieDBViewModel(
     private val context: Context,
     private val moviesRepository: MoviesRepository,
     private val favoriteMoviesRepository: SavedMovieRepository,
-    private val savedMovieRepository: SavedMovieRepository
+    private val savedMovieRepository: SavedMovieRepository,
 ) : ViewModel() {
 
     var movieListUiState: MovieListUiState by mutableStateOf(MovieListUiState.Loading)
@@ -77,6 +82,16 @@ class MovieDBViewModel(
         private set
 
     private val _networkAvailable = MutableStateFlow(true)
+
+    private val _selectedTabIndex = MutableStateFlow(0)
+    val selectedTabIndexFlow: StateFlow<Int> = _selectedTabIndex.asStateFlow()
+
+    var selectedTabIndex: Int
+        get() = _selectedTabIndex.value
+        set(value) {
+            _selectedTabIndex.value = value
+            refreshData()
+        }
 
     init {
         observeNetworkConnectivity(context)
@@ -98,25 +113,12 @@ class MovieDBViewModel(
 
     private fun refreshData() {
         when (_selectedTabIndex.value) {
-            0 -> {
-                if (_networkAvailable.value) {
-                    getPopularMovies()
-                } else {
-                    getLastTapMovies("popular")
-                }
-            }
-            1 -> {
-                if (_networkAvailable.value) {
-                    getTopRatedMovies()
-                } else {
-                    getLastTapMovies("top_rated")
-                }
-            }
+            0 -> getPopularMovies()
+            1 -> getTopRatedMovies()
             2 -> getFavoriteMovies()
         }
     }
 
-    private val _selectedTabIndex = MutableStateFlow(0)
 
     fun getTopRatedMovies() {
         viewModelScope.launch {
