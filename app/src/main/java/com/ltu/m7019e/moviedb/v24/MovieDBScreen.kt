@@ -91,7 +91,10 @@ fun MovieTabScreen(
             tabTitles.forEachIndexed { index, title ->
                 Tab(
                     selected = selectedTabIndex == index,
-                    onClick = { selectedTabIndex = index },
+                    onClick = {
+                        selectedTabIndex = index  // Update the index directly
+                        movieDBViewModel.selectedTabIndex = index  // Sync with ViewModel
+                    },
                     text = { Text(title) }
                 )
             }

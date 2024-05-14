@@ -5,6 +5,7 @@ import MoviesRepository
 import NetworkMoviesRepository
 import SavedMovieRepository
 import android.content.Context
+import androidx.work.WorkManager
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import com.ltu.m7019e.moviedb.v24.network.MovieDBApiService
 import com.ltu.m7019e.moviedb.v24.utils.Constants
@@ -19,7 +20,6 @@ interface AppContainer {
 }
 
 class DefaultAppContainer(private val context: Context) : AppContainer {
-
     fun getLoggerInterceptor(): HttpLoggingInterceptor {
         val logging = HttpLoggingInterceptor()
         logging.level = HttpLoggingInterceptor.Level.BODY
